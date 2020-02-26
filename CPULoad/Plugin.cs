@@ -38,9 +38,7 @@ namespace CPULoad
             new PluginPageInfo
             {
                 Name = "CpuLoadPluginConfigurationPage",
-                EmbeddedResourcePath = GetType().Namespace + ".Configuration.CpuLoadPluginConfigurationPage.html",
-                DisplayName = "Cpu",
-                EnableInMainMenu = true
+                EmbeddedResourcePath = GetType().Namespace + ".Configuration.CpuLoadPluginConfigurationPage.html"
 
             },
             new PluginPageInfo
@@ -54,5 +52,6 @@ namespace CPULoad
                 EmbeddedResourcePath = GetType().Namespace + ".Configuration.Chart.bundle.js"
             }
         };
+
     }
 }

@@ -1,12 +1,23 @@
 ﻿<div data-role="page" class=" type-interior pluginConfigurationPage CpuLoadPluginConfigurationPage" data-require="emby-button,emby-input,emby-select,emby-checkbox" data-controller="__plugin/CpuLoadPluginConfigurationPageJS">
     <div class="content-primary">
-        <div class="verticalSection verticalSection">
-            <div class="sectionTitleContainer sectionTitleContainer-cards flex align-items-center">
-                <h2 class="sectionTitle sectionTitle-cards">CPU Load</h2>
+        <form id="extras">
+            <div class="verticalSection verticalSection">
+                <div class="sectionTitleContainer sectionTitleContainer-cards flex align-items-center">
+                    <h2 class="sectionTitle sectionTitle-cards">CPU Load</h2>
+                </div>
             </div>
-        </div>
-        <div is="emby-itemscontainer" class="itemsContainer vertical-wrap" id="CpuContainer">
-            <h1 id="uptime"></h1>
-        </div>
+
+            <div class="inputContainer">
+                <label class="inputLabel inputLabelUnfocused" for="openWeatherMapAccessToken">Open Weather Map API Key</label>
+                <input type="text" name="openWeatherMapAccessToken" id="openWeatherMapAccessToken" class="emby-input">
+                <div class="fieldDescription">Personal API key for <a href="https://openweathermap.org/">openweathermap.org/</a>.</div>
+            </div>
+            <div class="inputContainer">
+                <label class="inputLabel inputLabelUnfocused" for="openWeatherMapCityId">Open Weather City ID</label>
+                <input type="text" name="openWeatherMapCityId" id="openWeatherMapCityId" class="emby-input">
+                <div class="fieldDescription">City Id used to get weather from OpenWeatherMap.org.</div>
+            </div>
+            <button id="saveButton" is="emby-button" type="submit" class="raised button-submit block formDialogFooterItem emby-button">Save</button>
+        </form>
     </div>
 </div>

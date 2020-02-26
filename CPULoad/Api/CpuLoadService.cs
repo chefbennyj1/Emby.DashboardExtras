@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using CPULoad.Helpers;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Services;
@@ -30,6 +27,13 @@ namespace CPULoad.Api
         {
             public string UpTimeDays { get; set; }
             public string UpTimeHours { get; set; }
+        }
+
+        [Route("/GetWeatherData", "GET", Summary = "Get System Up-time Data")]
+        public class WeatherData : IReturn<string>
+        {
+            public string data { get; set; }
+            
         }
 
         private IJsonSerializer JsonSerializer { get; set; }
@@ -66,10 +70,10 @@ namespace CPULoad.Api
 
                 case false:
                     info = WindowsCmd.GetCommandOutput("net statistics server");
-                    var info1 = info.Split(new[] {"Statistics since"}, StringSplitOptions.None)[1];
-                    var info2 = info1.Split(new[] { "M" }, StringSplitOptions.None)[0];
-                    upTime = (DateTime.Now - DateTime.Parse(info2 + "M"));
-                    
+                    var info1 = info.Split(new[] { "Statistics since" }, StringSplitOptions.RemoveEmptyEntries)[1];
+                    var info2 = info1.Split(new[] { "Sessions accepted" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    upTime = (DateTime.Now.Subtract(DateTime.Parse(info2)));
+
                     return JsonSerializer.SerializeToString(new SystemUpTimeData()
                     {
                         UpTimeDays =  upTime.Days.ToString(),
@@ -96,6 +100,35 @@ namespace CPULoad.Api
             {
                 CpuUsage = Math.Round((cpuUsageTotal * 100), 1, MidpointRounding.AwayFromZero).ToString()
             });
+        }
+
+        public string Get(WeatherData request)
+        {
+            //6101645
+            //13c656493c60fce29fa63b5f887fe515
+            var config = Plugin.Instance.Configuration;
+            if (config.OpenWeatherMapApiKey == null) return string.Empty;
+
+            var url = $"http://api.openweathermap.org/data/2.5/weather?id={config.OpenWeatherMapCityCode}&appid={config.OpenWeatherMapApiKey}";
+            try
+            {
+                var req = HttpWebRequest.Create(url);
+                req.Method = "GET";
+                using (WebResponse response = req.GetResponse())
+                {
+                    using (StreamReader streamReader = new StreamReader(response.GetResponseStream()))
+                    {
+                        return streamReader.ReadToEnd();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+            return string.Empty;
         }
     }
 }

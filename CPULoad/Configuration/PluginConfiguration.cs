@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MediaBrowser.Model.Plugins;
+﻿using MediaBrowser.Model.Plugins;
 
 namespace CPULoad.Configuration
 {
     public class PluginConfiguration : BasePluginConfiguration
     {
+        public string OpenWeatherMapApiKey { get; set; }
+        public string OpenWeatherMapCityCode { get; set; }
     }
 }

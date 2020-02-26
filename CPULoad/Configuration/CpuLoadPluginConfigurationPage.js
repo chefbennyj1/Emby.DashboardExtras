@@ -5,16 +5,22 @@
         return function (view) {
 
             view.addEventListener('viewshow',
-                () => { 
-                    ApiClient.getJSON(ApiClient.getUrl("OpenProcessorEvent").replace('http', 'ws')).then((result) => {
-                        view.querySelector('#uptime').value = result;
+                () => {
+
+                    ApiClient.getPluginConfiguration(pluginId).then((config) => {
+                        view.querySelector('#openWeatherMapAccessToken').value = config.OpenWeatherMapApiKey;
+                        view.querySelector('#openWeatherMapCityId').value = config.OpenWeatherMapCityCode;
                     });
-                    require([Dashboard.getConfigurationResourceUrl('Chart.bundle.js')],
-                        (chart) => {
 
-                            //drawDriveChart(view, chart);
-
+                    view.querySelector('#saveButton').addEventListener('click', () => {
+                        ApiClient.getPluginConfiguration(pluginId).then((config) => {
+                            config.OpenWeatherMapApiKey = view.querySelector('#openWeatherMapAccessToken').value;
+                            config.OpenWeatherMapCityCode = view.querySelector('#openWeatherMapCityId').value;
+                            ApiClient.updatePluginConfiguration(pluginId, config).then((result) => {
+                                Dashboard.processPluginConfigurationUpdateResult(result); 
+                            });
                         });
+                    });
                 });
         }
     });
