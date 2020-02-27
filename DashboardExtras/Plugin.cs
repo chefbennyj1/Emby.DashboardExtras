@@ -19,8 +19,7 @@ namespace CPULoad
         public override Guid Id => _id;
 
         public override string Name => "Dashboard Extras";
-
-
+        
         public Stream GetThumbImage()
         {
             var type = GetType();
