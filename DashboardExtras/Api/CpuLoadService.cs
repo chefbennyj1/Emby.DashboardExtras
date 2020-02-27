@@ -32,7 +32,8 @@ namespace CPULoad.Api
         [Route("/GetWeatherData", "GET", Summary = "Get System Up-time Data")]
         public class WeatherData : IReturn<string>
         {
-            public string data { get; set; }
+            public string weatherData { get; set; }
+            public string units { get; set; }
             
         }
 
@@ -108,8 +109,8 @@ namespace CPULoad.Api
             //13c656493c60fce29fa63b5f887fe515
             var config = Plugin.Instance.Configuration;
             if (config.OpenWeatherMapApiKey == null) return string.Empty;
-
-            var url = $"http://api.openweathermap.org/data/2.5/weather?id={config.OpenWeatherMapCityCode}&appid={config.OpenWeatherMapApiKey}";
+            var units = config.Degree == "celsius" ? "metric" : "imperial";
+            var url = $"http://api.openweathermap.org/data/2.5/weather?id={config.OpenWeatherMapCityCode}&&units={units}&appid={config.OpenWeatherMapApiKey}";
             try
             {
                 var req = HttpWebRequest.Create(url);
@@ -118,7 +119,7 @@ namespace CPULoad.Api
                 {
                     using (StreamReader streamReader = new StreamReader(response.GetResponseStream()))
                     {
-                        return streamReader.ReadToEnd();
+                        return JsonSerializer.SerializeToString(new WeatherData() { weatherData = streamReader.ReadToEnd(), units = config.Degree });
                     }
                 }
 

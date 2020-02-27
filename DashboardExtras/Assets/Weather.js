@@ -92,7 +92,7 @@ function getWeatherIcon(weatherData) {
         case "Snow":
             return "snowy";
         case "Rain":
-            return "rainy"
+            return "rainy";
     }
 
 
@@ -188,9 +188,10 @@ ready(".localUrl", (element) => {
     element.parentNode.insertBefore(weatherContainer, version.nextSibling);
 
     ApiClient.getJSON('/GetWeatherData').then((json) => {
-        use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + getWeatherIcon(json));
-        tempurature.innerHTML = Math.round(json.main.temp - 273.15) +
-            "°C | " +  json.weather[0].description + " | " + json.name + " " + json.sys.country;
+        var weatherData = JSON.parse(json['weatherData']);
+        use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + getWeatherIcon(weatherData));
+        tempurature.innerHTML = (json.units === 'celsius' ? Math.round(weatherData.main.temp) + "°C | " : Math.round(weatherData.main.temp) + "°F | ") +
+            weatherData.weather[0].description + " | " + weatherData.name + " " + weatherData.sys.country;
     });
 
 
@@ -199,10 +200,11 @@ ready(".localUrl", (element) => {
             ApiClient.getJSON('/GetSystemUptimeData').then((json) => {
                 upTimeNode.innerHTML = 'Up Time: ' + json['UpTimeDays'] + ' Days ' + json['UpTimeHours'] + ' Hours';
             });
-            ApiClient.getJSON('/GetWeatherData').then((json) => {
-                use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + getWeatherIcon(json));
-                tempurature.innerHTML = Math.round(json.main.temp - 273.15) + "°C | " +
-                    json.weather[0].description + " | " + json.name + " " + json.sys.country;
+        ApiClient.getJSON('/GetWeatherData').then((json) => {
+            var weatherData = JSON.parse(json['weatherData']);
+            use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + getWeatherIcon(weatherData));
+            tempurature.innerHTML = (json.units === 'celsius' ? Math.round(weatherData.main.temp) + "°C | " : Math.round(weatherData.main.temp) + "°F | ") +
+                weatherData.weather[0].description + " | " + weatherData.name + " " + weatherData.sys.country;
             });
         },
         60 * 60 * 60 * 20);

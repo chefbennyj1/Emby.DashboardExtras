@@ -6,5 +6,7 @@ namespace CPULoad.Configuration
     {
         public string OpenWeatherMapApiKey { get; set; }
         public string OpenWeatherMapCityCode { get; set; }
+        public string Degree { get; set; }
+
     }
 }

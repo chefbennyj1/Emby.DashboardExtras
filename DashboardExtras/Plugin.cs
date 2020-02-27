@@ -18,7 +18,7 @@ namespace CPULoad
         private readonly Guid _id = new Guid("4655E73B-C161-49F7-9EDC-265212A0DE9D");
         public override Guid Id => _id;
 
-        public override string Name => "CPU Load";
+        public override string Name => "Dashboard Extras";
 
 
         public Stream GetThumbImage()
@@ -37,14 +37,14 @@ namespace CPULoad
         {
             new PluginPageInfo
             {
-                Name = "CpuLoadPluginConfigurationPage",
-                EmbeddedResourcePath = GetType().Namespace + ".Configuration.CpuLoadPluginConfigurationPage.html"
+                Name = "DashboardExtrasPluginConfigurationPage",
+                EmbeddedResourcePath = GetType().Namespace + ".Configuration.DashboardExtrasPluginConfigurationPage.html"
 
             },
             new PluginPageInfo
             {
-                Name = "CpuLoadPluginConfigurationPageJS",
-                EmbeddedResourcePath = GetType().Namespace + ".Configuration.CpuLoadPluginConfigurationPage.js"
+                Name = "DashboardExtrasPluginConfigurationPageJS",
+                EmbeddedResourcePath = GetType().Namespace + ".Configuration.DashboardExtrasPluginConfigurationPage.js"
             },
             new PluginPageInfo
             {
