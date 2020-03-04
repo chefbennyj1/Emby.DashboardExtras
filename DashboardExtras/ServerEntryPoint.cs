@@ -6,7 +6,7 @@ using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 
-namespace CPULoad
+namespace DashboardExtras
 {
     public class ServerEntryPoint : IServerEntryPoint
     {

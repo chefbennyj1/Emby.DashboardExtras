@@ -1,6 +1,6 @@
 ﻿using MediaBrowser.Model.Plugins;
 
-namespace CPULoad.Configuration
+namespace DashboardExtras.Configuration
 {
     public class PluginConfiguration : BasePluginConfiguration
     {

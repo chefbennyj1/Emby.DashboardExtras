@@ -1,12 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
+﻿using System.Diagnostics;
 
-using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Net;
-using MediaBrowser.Model.Net;
-
-namespace CPULoad.Helpers
+namespace DashboardExtras.Helpers
 {
     public class WindowsCmd
     {

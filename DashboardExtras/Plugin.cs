@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using CPULoad.Configuration;
+using DashboardExtras.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 
-namespace CPULoad
+namespace DashboardExtras
 {
     public class Plugin : BasePlugin<PluginConfiguration>, IHasThumbImage, IHasWebPages
     {

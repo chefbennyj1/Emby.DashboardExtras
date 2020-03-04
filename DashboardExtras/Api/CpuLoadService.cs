@@ -4,17 +4,16 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
-using CPULoad.Helpers;
+using DashboardExtras.Helpers;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Services;
 
-namespace CPULoad.Api
+namespace DashboardExtras.Api
 {
 
     public class CpuLoadService : IService 
     {
-
 
         [Route("/GetCpuUsageData", "GET", Summary = "Get System CPU Data")]
         public class SystemCpuData : IReturn<string>

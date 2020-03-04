@@ -1,9 +1,18 @@
 ﻿<div data-role="page" class=" type-interior pluginConfigurationPage DashboardExtrasPluginConfigurationPage" data-require="emby-button,emby-input,emby-select,emby-checkbox" data-controller="__plugin/DashboardExtrasPluginConfigurationPageJS">
     <div class="content-primary">
         <form id="extras">
+
+            <!--<div class="infoBanner hide flex align-items-center">
+                <h1><i class="md-icon">alert</i></h1>
+                <div class="fieldDescription">
+                    In order to properly remove this plug-in from Emby, press the button below before uninstalling!
+                    <button id="removeButton" is="emby-button" type="submit" class="raised button-submit block formDialogFooterItem emby-button">Remove weather</button>
+                </div>
+            </div>-->
+
             <div class="verticalSection verticalSection">
                 <div class="sectionTitleContainer sectionTitleContainer-cards flex align-items-center">
-                    <h2 class="sectionTitle sectionTitle-cards">CPU Load</h2>
+                    <h2 class="sectionTitle sectionTitle-cards">Weather</h2>
                 </div>
             </div>
 
@@ -18,7 +27,7 @@
                 <div class="fieldDescription">City Id used to get weather from OpenWeatherMap.org.</div>
             </div>
 
-            <div class="checkboxContainer checkboxContainer-withDescription" style="padding-right:2em">
+            <div class="checkboxContainer checkboxContainer-withDescription" style="padding-right: 2em">
                 <label class="emby-checkbox-label">
                     <input id="fahrenheit" type="checkbox" is="emby-checkbox" class="emby-checkbox" data-embycheckbox="true">
                     <span class="checkboxLabel">Fahrenheit</span>
@@ -32,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="checkboxContainer checkboxContainer-withDescription" style="padding-right:2em">
+            <div class="checkboxContainer checkboxContainer-withDescription" style="padding-right: 2em">
                 <label class="emby-checkbox-label">
                     <input id="celsius" type="checkbox" is="emby-checkbox" class="emby-checkbox" data-embycheckbox="true">
                     <span class="checkboxLabel">Celsius</span>

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace CPULoad.Helpers
+namespace DashboardExtras.Helpers
 {
     public class LinuxBash
     {
