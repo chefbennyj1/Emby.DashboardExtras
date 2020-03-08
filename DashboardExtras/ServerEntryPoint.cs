@@ -31,10 +31,20 @@ namespace DashboardExtras
 
             var indexPath       = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Emby-Server\system\dashboard-ui\index.html";
             var dashboardUiPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Emby-Server\system\dashboard-ui";
+            const string dashboardExtraJs = "Dashboard_Extras_1-0.js";
 
-            if (!File.Exists(dashboardUiPath + "\\Weather.js"))
+
+            //Move away from weather.js
+            if (File.Exists(dashboardUiPath + "\\Weather.js"))
             {
-                WriteResourceToFile(GetType().Namespace + ".Assets.Weather.js", dashboardUiPath + "\\Weather.js");
+                File.Delete(dashboardUiPath + "\\Weather.js");
+            }
+
+
+
+            if (!File.Exists(dashboardUiPath + "\\" + dashboardExtraJs))
+            {
+                WriteResourceToFile(GetType().Namespace + ".Assets." + dashboardExtraJs, dashboardUiPath + "\\" + dashboardExtraJs);
             }
 
             var indexLines          = new List<string>();
@@ -51,14 +61,19 @@ namespace DashboardExtras
                     {
                         insertWeatherScript = i - 1;
                     }
-                    indexLines.Add(line);
+
+                    if (!line.Contains("Weather.js")) //Move away from Weather JS
+                    {
+                        indexLines.Add(line);
+                    }
+                    
                     i++;
                 }
             }
 
-            if (!indexLines.Exists(l => l == "<script src=\"Weather.js\"></script>"))
+            if (!indexLines.Exists(l => l == "<script src=\"" + dashboardExtraJs + "\"></script>"))
             {
-                indexLines.Insert(insertWeatherScript, "<script src=\"Weather.js\"></script>");
+                indexLines.Insert(insertWeatherScript, "<script src=\"" + dashboardExtraJs + "\"></script>");
             }
                 
             File.WriteAllLines(indexPath, indexLines);
