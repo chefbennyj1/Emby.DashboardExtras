@@ -133,8 +133,7 @@ namespace DashboardExtras.Api
 
         public string Get(WeatherData request)
         {
-            //6101645
-            //13c656493c60fce29fa63b5f887fe515
+           
             var config = Plugin.Instance.Configuration;
             if (config.OpenWeatherMapApiKey == null) return string.Empty;
             var units = config.Degree == "celsius" ? "metric" : "imperial";
