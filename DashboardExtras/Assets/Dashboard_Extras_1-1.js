@@ -124,12 +124,12 @@ var upTimeCounter;
 ready(".localUrl", (element) => {
 
     clearInterval(upTimeCounter);
-
+    var upTimeNode, totalStorageNode, use, temperature;
     ApiClient.getJSON('/EnabledExtras').then((extras) => {
 
         if (extras.UpTimeEnabled === true) {
             // Create a the upTime Element
-            var upTimeNode = document.createElement('p');
+            upTimeNode = document.createElement('p');
             upTimeNode.id = 'upTime';
             // Insert the upTime node before the #localUrl node
             element.parentNode.insertBefore(upTimeNode, element);
@@ -139,7 +139,7 @@ ready(".localUrl", (element) => {
         } 
 
         if (extras.StorageEnabled === true) {
-            var totalStorageNode = document.createElement('p');
+            totalStorageNode = document.createElement('p');
             totalStorageNode.id = 'totalStorage';
             element.parentNode.insertBefore(totalStorageNode, element);
             ApiClient.getJSON('/GetTotalStorage').then((json) => {
@@ -151,8 +151,8 @@ ready(".localUrl", (element) => {
             //Create Weather
             var weatherContainer = document.createElement('div');
             var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-            var temperature = document.createElement('p');
+            use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+            temperature = document.createElement('p');
             var version = element.parentElement.querySelector('#pUpToDate');
 
             weatherContainer.style = 'display:flex; margin:-1em';
@@ -213,7 +213,7 @@ ready(".localUrl", (element) => {
             }
 
         });
-    }, 60 * 60 * 60);
+    }, 60 * 60);
 });
 
 
