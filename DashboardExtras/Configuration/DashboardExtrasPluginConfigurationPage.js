@@ -102,8 +102,8 @@
             dlg.querySelector('#okButton').addEventListener('click',
                 () => {
                     ApiClient.getPluginConfiguration(pluginId).then((config) => {
-                        config.OpenWeatherMapApiKey = view.querySelector('#openWeatherMapAccessToken').value;
-                        config.OpenWeatherMapCityCode = view.querySelector('#openWeatherMapCityId').value;
+                        config.OpenWeatherMapApiKey = dlg.querySelector('#openWeatherMapAccessToken').value;
+                        config.OpenWeatherMapCityCode = dlg.querySelector('#openWeatherMapCityId').value;
                         ApiClient.updatePluginConfiguration(pluginId, config).then((result) => {
                             Dashboard.processPluginConfigurationUpdateResult(result);
                         });
