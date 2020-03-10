@@ -5,7 +5,10 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using DashboardExtras.Helpers;
+using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.IO;
+using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Services;
 
@@ -14,6 +17,15 @@ namespace DashboardExtras.Api
 
     public class CpuLoadService : IService 
     {
+
+        [Route("/EnabledExtras", "GET", Summary = "Get System CPU Data")]
+        public class EnabledExtras : IReturn<string>
+        {
+            public bool UpTimeEnabled  { get; set; }
+            public bool StorageEnabled { get; set; }
+            public bool WeatherEnabled { get; set; }
+        }
+
 
         [Route("/GetCpuUsageData", "GET", Summary = "Get System CPU Data")]
         public class SystemCpuData : IReturn<string>
@@ -24,25 +36,27 @@ namespace DashboardExtras.Api
         [Route("/GetSystemUptimeData", "GET", Summary = "Get System Up-time Data")]
         public class SystemUpTimeData : IReturn<string>
         {
-            public string UpTimeDays { get; set; }
+            public string UpTimeDays  { get; set; }
             public string UpTimeHours { get; set; }
+           
         }
 
         [Route("/GetWeatherData", "GET", Summary = "Get System Up-time Data")]
         public class WeatherData : IReturn<string>
         {
             public string weatherData { get; set; }
-            public string units { get; set; }
+            public string units       { get; set; }
             
         }
 
         private IJsonSerializer JsonSerializer { get; set; }
-        private IFileSystem FileSystem { get; set; }
+        private IFileSystem FileSystem         { get; set; }
         
         public CpuLoadService(IJsonSerializer json, IFileSystem fS)
         {
             JsonSerializer = json;
             FileSystem = fS;
+           
         }
         
         private bool IsUnix()
@@ -52,9 +66,24 @@ namespace DashboardExtras.Api
 
             return isUnix;
         }
+
+
+        public string Get(EnabledExtras request)
+        {
+            var config = Plugin.Instance.Configuration;
+            return JsonSerializer.SerializeToString(new EnabledExtras()
+            {
+                StorageEnabled = config.StorageEnabled != null ? config.StorageEnabled : false,
+                UpTimeEnabled = config.UpTimeEnabled != null ? config.UpTimeEnabled : false,
+                WeatherEnabled = config.WeatherEnabled != null ? config.WeatherEnabled : false,
+            });
+        }
+
+
         //typeperf "\Processor(_Total)\% Processor Time"
         public string Get(SystemUpTimeData request)
         {
+            var config = Plugin.Instance.Configuration;
             var info = string.Empty;
             TimeSpan upTime;
             switch (IsUnix())

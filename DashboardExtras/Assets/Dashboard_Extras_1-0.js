@@ -19,7 +19,7 @@
             // Watch for changes in the document
             observer = new MutationObserver(function (mutations) {
 
-                check()
+                check();
             });
             observer.observe(doc.documentElement, {
                 childList: true,
@@ -60,29 +60,10 @@
 })(this);
 
 
-
-//Theme objectives
-/*
-var ApiClient = () => {
-    getJSON((endpoint) => {
-        return new Promise((resolve, reject) => {
-            var url = window.location.href.split("/web")[0] + "/emby";
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url + endpoint, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onreadystatechange = () => {
-                xhr.status === 200 ? resolve(JSON.parse(xhr.responseText)) : reject(xhr.status);
-            }
-            xhr.send();
-        });
-    });
-
-}
- */
 function getWeatherIcon(weatherData) {
-
-    var time = new Date().getTime()
-    var now = Math.floor(time / 1000)
+    
+    var time = new Date().getTime();
+    var now = Math.floor(time / 1000);
     switch (weatherData.weather[0].main) {
         case "Mist":
         case "Fog":
@@ -95,9 +76,7 @@ function getWeatherIcon(weatherData) {
             return "snowy";
         case "Rain":
             return "rainy";
-    }
-
-
+    } 
 
 }
 
@@ -137,80 +116,104 @@ function getWeatherSvgHtml() {
 }
 
 ready('body', (element) => {
-    element.innerHTML += getWeatherSvgHtml();
-
-});
-
-
+    element.innerHTML += getWeatherSvgHtml(); 
+}); 
 
 //Add UpTime, Weather and Drive Space to the Dashboard
 var upTimeCounter;
 ready(".localUrl", (element) => {
+
     clearInterval(upTimeCounter);
 
-    // Create a the upTime Element
-    var upTimeNode = document.createElement('p');
-    upTimeNode.id = 'upTime';
+    ApiClient.getJSON('/EnabledExtras').then((extras) => {
 
-    var totalStorageNode = document.createElement('p');
-    totalStorageNode.id = 'totalStorage';
-
-    // Insert the upTime node before the #localUrl node
-    element.parentNode.insertBefore(upTimeNode, element);
-
-    element.parentNode.insertBefore(totalStorageNode, element);
-
-    ApiClient.getJSON('/GetSystemUptimeData').then((json) => {
-        upTimeNode.innerHTML = 'Up Time: ' + json['UpTimeDays'] + ' Days ' + json['UpTimeHours'] + ' Hours';
-    });
-
-    ApiClient.getJSON('/GetTotalStorage').then((json) => {
-        totalStorageNode.innerHTML = 'Total Drive Storage: ' + json['Used'] + '\\' + json['Total'];
-    });
-
-    //ApiClient._webSocket.onmessage = (msg, e) => { console.log(JSON.parse(msg.data)); };
-
-    //Create Weather
-    var weatherContainer = document.createElement('div');
-    var svg              = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    var use              = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    var temperature      = document.createElement('p');
-    var version          = element.parentElement.querySelector('#pUpToDate');
-
-    weatherContainer.style = 'display:flex; margin:-1em';
-
-    svg.style.height = '25px';
-    svg.style.width  = '25px';
-    svg.style.margin = '0.6em 0.9em';
-
-    svg.appendChild(use);
-
-    weatherContainer.appendChild(svg);
-    weatherContainer.appendChild(temperature);
-
-    element.parentNode.insertBefore(weatherContainer, version.nextSibling);
-
-    ApiClient.getJSON('/GetWeatherData').then((json) => {
-        var weatherData = JSON.parse(json['weatherData']);
-        use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + getWeatherIcon(weatherData));
-        temperature.innerHTML = (json.units === 'celsius' ? Math.round(weatherData.main.temp) + "°C | " : Math.round(weatherData.main.temp) + "°F | ") +
-            weatherData.weather[0].description + " | " + weatherData.name + " " + weatherData.sys.country;
-    });
-
-
-    upTimeCounter = setInterval(() => {
-            console.log('update uptime');
+        if (extras.UpTimeEnabled === true) {
+            // Create a the upTime Element
+            var upTimeNode = document.createElement('p');
+            upTimeNode.id = 'upTime';
+            // Insert the upTime node before the #localUrl node
+            element.parentNode.insertBefore(upTimeNode, element);
             ApiClient.getJSON('/GetSystemUptimeData').then((json) => {
                 upTimeNode.innerHTML = 'Up Time: ' + json['UpTimeDays'] + ' Days ' + json['UpTimeHours'] + ' Hours';
             });
-        ApiClient.getJSON('/GetWeatherData').then((json) => {
-            var weatherData = JSON.parse(json['weatherData']);
-            use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + getWeatherIcon(weatherData));
-            temperature.innerHTML = (json.units === 'celsius' ? Math.round(weatherData.main.temp) + "°C | " : Math.round(weatherData.main.temp) + "°F | ") +
-                weatherData.weather[0].description + " | " + weatherData.name + " " + weatherData.sys.country;
+        } 
+
+        if (extras.StorageEnabled === true) {
+            var totalStorageNode = document.createElement('p');
+            totalStorageNode.id = 'totalStorage';
+            element.parentNode.insertBefore(totalStorageNode, element);
+            ApiClient.getJSON('/GetTotalStorage').then((json) => {
+                totalStorageNode.innerHTML = 'Total Drive Storage: ' + json['Used'] + '\\' + json['Total'];
             });
-        },
-        60 * 60 * 60);
+        } 
+
+        if (extras.WeatherEnabled === true) {
+            //Create Weather
+            var weatherContainer = document.createElement('div');
+            var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+            var temperature = document.createElement('p');
+            var version = element.parentElement.querySelector('#pUpToDate');
+
+            weatherContainer.style = 'display:flex; margin:-1em';
+
+            svg.style.height = '25px';
+            svg.style.width = '25px';
+            svg.style.margin = '0.6em 0.9em';
+
+            svg.appendChild(use);
+
+            weatherContainer.appendChild(svg);
+            weatherContainer.appendChild(temperature);
+
+            element.parentNode.insertBefore(weatherContainer, version.nextSibling);
+
+            try {
+                ApiClient.getJSON('/GetWeatherData').then((json) => {
+                    var weatherData = JSON.parse(json['weatherData']);
+                    use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + getWeatherIcon(weatherData));
+                    temperature.innerHTML = (json.units === 'celsius'
+                            ? Math.round(weatherData.main.temp) + "°C | "
+                            : Math.round(weatherData.main.temp) + "°F | ") +
+                        weatherData.weather[0].description +
+                        " | " +
+                        weatherData.name +
+                        " " +
+                        weatherData.sys.country;
+                });
+            } catch (err) {
+                temperature.innerHTML = "Open plugin settings to access weather data.";
+            }
+        }
+    });
+
+    upTimeCounter = setInterval(() => {
+        ApiClient.getJSON('/EnabledExtras').then((extras) => {
+            console.log('update uptime & weather data');
+
+            if (extras.UpTimeEnabled === true) {
+                ApiClient.getJSON('/GetSystemUptimeData').then((json) => {
+                    upTimeNode.innerHTML = 'Up Time: ' + json['UpTimeDays'] + ' Days ' + json['UpTimeHours'] + ' Hours';
+                });
+            }
+
+            if (extras.WeatherEnabled === true) {
+                ApiClient.getJSON('/GetWeatherData').then((json) => {
+                    var weatherData = JSON.parse(json['weatherData']);
+                    use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + getWeatherIcon(weatherData));
+                    temperature.innerHTML = (json.units === 'celsius'
+                            ? Math.round(weatherData.main.temp) + "°C | "
+                            : Math.round(weatherData.main.temp) + "°F | ") +
+                        weatherData.weather[0].description +
+                        " | " +
+                        weatherData.name +
+                        " " +
+                        weatherData.sys.country;
+                });
+            }
+
+        });
+    }, 60 * 60 * 60);
 });
 
 

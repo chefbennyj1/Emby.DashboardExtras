@@ -11,18 +11,10 @@
 </PropertyGroup>
 
 <ItemGroup>
-  <None Remove="Assets\Dashboard_Extras_1-0.js" />
-  <None Remove="Configuration\CpuLoadPluginConfigurationPage.html" />
-  <None Remove="Configuration\CpuLoadPluginConfigurationPage.js" />
-  <None Remove="Configuration\DiskSpacePluginConfigurationPage.html" />
-  <None Remove="Configuration\DiskSpacePluginConfigurationPage.js" />
-  <None Remove="thumb.jpg" />
-  <None Remove="thumb.png" />
-</ItemGroup>
-
-<ItemGroup>
   <EmbeddedResource Include="Assets\Dashboard_Extras_1-0.js" />
   <EmbeddedResource Include="Configuration\Chart.bundle.js" />
+  <EmbeddedResource Include="Configuration\DashboardExtrasPluginConfigurationPage.html" />
+  <EmbeddedResource Include="Configuration\DashboardExtrasPluginConfigurationPage.js" />
   <EmbeddedResource Include="thumb.png" />
 </ItemGroup>
 

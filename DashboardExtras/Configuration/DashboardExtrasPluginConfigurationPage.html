@@ -9,28 +9,32 @@
                     <button id="removeButton" is="emby-button" type="submit" class="raised button-submit block formDialogFooterItem emby-button">Remove weather</button>
                 </div>
             </div>-->
-
+            
             <div class="verticalSection verticalSection">
                 <div class="sectionTitleContainer sectionTitleContainer-cards flex align-items-center">
-                    <h2 class="sectionTitle sectionTitle-cards">Weather</h2>
+                    <h2 class="sectionTitle sectionTitle-cards">Dashboard Extras</h2>
                 </div>
             </div>
-
-            <div class="inputContainer">
-                <label class="inputLabel inputLabelUnfocused" for="openWeatherMapAccessToken">Open Weather Map API Key</label>
-                <input type="text" name="openWeatherMapAccessToken" id="openWeatherMapAccessToken" class="emby-input">
-                <div class="fieldDescription">Personal API key for <a href="https://openweathermap.org/">openweathermap.org/</a>.</div>
-            </div>
-            <div class="inputContainer">
-                <label class="inputLabel inputLabelUnfocused" for="openWeatherMapCityId">Open Weather City ID</label>
-                <input type="text" name="openWeatherMapCityId" id="openWeatherMapCityId" class="emby-input">
-                <div class="fieldDescription">City Id used to get weather from OpenWeatherMap.org.</div>
-            </div>
-
+            
             <div class="checkboxContainer checkboxContainer-withDescription" style="padding-right: 2em">
                 <label class="emby-checkbox-label">
-                    <input id="fahrenheit" type="checkbox" is="emby-checkbox" class="emby-checkbox" data-embycheckbox="true">
-                    <span class="checkboxLabel">Fahrenheit</span>
+                    <input id="weatherEnabled" type="checkbox" is="emby-checkbox" class="emby-checkbox" data-embycheckbox="true">
+                    <span class="checkboxLabel">Enable Weather</span>
+                    <span class="emby-checkbox-focushelper"></span>
+                    <span class="checkboxOutline">
+                        <i class="md-icon checkboxIcon checkboxIcon-checked"></i>
+                        <i class="md-icon checkboxIcon checkboxIcon-unchecked"></i>
+                    </span>
+                </label>
+                <div class="fieldDescription checkboxFieldDescription">
+                </div>
+            </div>
+            
+            
+            <div class="checkboxContainer checkboxContainer-withDescription" style="padding-right: 2em">
+                <label class="emby-checkbox-label">
+                    <input id="storageEnabled" type="checkbox" is="emby-checkbox" class="emby-checkbox" data-embycheckbox="true">
+                    <span class="checkboxLabel">Enable Storage (Must have Disk Space plugin installed)</span>
                     <span class="emby-checkbox-focushelper"></span>
                     <span class="checkboxOutline">
                         <i class="md-icon checkboxIcon checkboxIcon-checked"></i>
@@ -43,8 +47,8 @@
 
             <div class="checkboxContainer checkboxContainer-withDescription" style="padding-right: 2em">
                 <label class="emby-checkbox-label">
-                    <input id="celsius" type="checkbox" is="emby-checkbox" class="emby-checkbox" data-embycheckbox="true">
-                    <span class="checkboxLabel">Celsius</span>
+                    <input id="upTimeEnabled" type="checkbox" is="emby-checkbox" class="emby-checkbox" data-embycheckbox="true">
+                    <span class="checkboxLabel">Enable System UpTime</span>
                     <span class="emby-checkbox-focushelper"></span>
                     <span class="checkboxOutline">
                         <i class="md-icon checkboxIcon checkboxIcon-checked"></i>
@@ -55,7 +59,16 @@
                 </div>
             </div>
 
-            <button id="saveButton" is="emby-button" type="submit" class="raised button-submit block formDialogFooterItem emby-button">Save</button>
+            
+            
+            <!----div class="inputContainer">
+                <label class="textareaLabel textareaLabelUnfocused" for="txtCustomCss">Custom javascript:</label>
+                <textarea is="emby-textarea" style="width: 100%; height:40em"id="txtCustomJavascript" label="Custom javascript:" class="textarea-mono emby-textarea" rows="10" spellcheck="false"></textarea>
+                <div class="fieldDescription">Apply your own custom javascript to the web interface.</div>
+            </div>
+
+            <button-- id="saveButton" is="emby-button" type="submit" class="raised button-submit block formDialogFooterItem emby-button">Save</button-->
+
         </form>
     </div>
 </div>
