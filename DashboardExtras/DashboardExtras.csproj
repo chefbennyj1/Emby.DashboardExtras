@@ -11,7 +11,7 @@
 </PropertyGroup>
 
 <ItemGroup>
-  <EmbeddedResource Include="Assets\Dashboard_Extras_1-1.js" />
+  <EmbeddedResource Include="Assets\Dashboard_Extras_1-2.js" />
   <EmbeddedResource Include="Configuration\Chart.bundle.js" />
   <EmbeddedResource Include="Configuration\DashboardExtrasPluginConfigurationPage.html" />
   <EmbeddedResource Include="Configuration\DashboardExtrasPluginConfigurationPage.js" />

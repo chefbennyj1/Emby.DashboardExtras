@@ -3,43 +3,53 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using DashboardExtras.Events;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Plugins;
+using MediaBrowser.Controller.Session;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Serialization;
+
 
 namespace DashboardExtras
 {
     public class ServerEntryPoint : IServerEntryPoint
     {
-        private IFileSystem FileSystem { get; set; }
-        private ILogger logger         { get; set; }
-        private ILogManager LogManager { get; set; }
-        private IServerApplicationHost host { get; set; }
-        public ServerEntryPoint(IFileSystem file, ILogManager logManager, IServerApplicationHost serverApplicationHost)
+        private IFileSystem FileSystem                          { get; set; }
+        private ILogger Logger                                  { get; set; }
+        private ILogManager LogManager                          { get; set; }
+        private IServerApplicationPaths ServerApplicationPaths  { get; set; }
+        private static ISessionManager SessionManager           { get; set; }
+        private static IJsonSerializer JsonSerializer           { get; set; }
+
+        // ReSharper disable once TooManyDependencies
+        public ServerEntryPoint(IFileSystem file, ILogManager logManager, IServerApplicationPaths paths, ISessionManager ses, IJsonSerializer json)
         {
-            FileSystem = file;
-            LogManager = logManager;
-            logger     = LogManager.GetLogger(Plugin.Instance.Name);
-            host = serverApplicationHost;
+            FileSystem             = file;
+            LogManager             = logManager;
+            Logger                 = LogManager.GetLogger(Plugin.Instance.Name);
+            ServerApplicationPaths = paths;
+            SessionManager         = ses;
+            JsonSerializer         = json;
         }
         public void Dispose()
         {
-            throw new NotImplementedException();
+           
         }
 
         public void Run()
         {
             Plugin.Instance.UpdateConfiguration(Plugin.Instance.Configuration);
 
-            var sysInfo = host.GetSystemInfo(CancellationToken.None).Result; //Yes calling Result!
-            var serverRootFolder = sysInfo.ProgramDataPath.Replace("programdata", "");
-            logger.Info(serverRootFolder);
+            var rootFolderPath   = ServerApplicationPaths.RootFolderPath; 
+            var serverRootFolder = rootFolderPath.Replace(@"programdata\root", "");
+            Logger.Info(serverRootFolder);
 
             //This will take care of updating and loading the javascript file into the web app when the plugin loads
-            const int version = 1;
-            var indexPath        = serverRootFolder + @"system\dashboard-ui\index.html";
-            var dashboardUiPath  = serverRootFolder + @"system\dashboard-ui";
+            const int version = 2;
+            var indexPath        = serverRootFolder + @"\system\dashboard-ui\index.html";
+            var dashboardUiPath  = serverRootFolder + @"\system\dashboard-ui";
             var dashboardExtraJs = $"Dashboard_Extras_1-{version}.js";
             
             //Add newest version of the file
@@ -49,9 +59,9 @@ namespace DashboardExtras
             }
 
             //Remove older version of the javascript file from the file system.
-            if(File.Exists($"{dashboardUiPath}\\Dashboard_Extras_1-{version - 1}.js")) //<-- plugin updates must happen in increments of 1 in order to do this properly
+            if(File.Exists($"{dashboardUiPath}\\Dashboard_Extras_1-" + (version - 1) + ".js")) //<-- plugin updates must happen in increments of 1 in order to do this properly
             {
-                File.Delete($"{dashboardUiPath}\\Dashboard_Extras_1-{version - 1}.js");
+                File.Delete($"{dashboardUiPath}\\Dashboard_Extras_1-" + (version - 1) + ".js");
             }
 
             var indexLines = GetIndexToList(indexPath);
@@ -69,14 +79,28 @@ namespace DashboardExtras
             }
                 
             File.WriteAllLines(indexPath, indexLines); //Save the index file back to the file system for loading.
+
+
+            //var res = new Resources();
+
+            //res.OnResourceDataEvents += Resources_OnResourceDataEvents;
+
         }
+        
+        private async void Resources_OnResourceDataEvents(object sender, Resources.OnResourceEventArgs e)
+        {
+            var json = JsonSerializer.SerializeToString(e);
+
+            await SessionManager.SendMessageToAdminSessions("Resources", json, CancellationToken.None);
+        }
+        
 
         private static List<string> GetIndexToList(string indexPath)
         {
             var indexLines = new List<string>();
             using (var sr = new StreamReader(indexPath))
             {
-                var line = string.Empty;
+                var line = String.Empty;
                 
                 while ((line = sr.ReadLine()) != null)
                 {

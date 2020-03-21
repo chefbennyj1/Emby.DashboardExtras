@@ -5,19 +5,17 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using DashboardExtras.Helpers;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.IO;
-using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Services;
 
 namespace DashboardExtras.Api
 {
 
-    public class CpuLoadService : IService 
+    public class DashboardExtrasService : IService 
     {
 
+       
         [Route("/EnabledExtras", "GET", Summary = "Get System CPU Data")]
         public class EnabledExtras : IReturn<string>
         {
@@ -38,10 +36,12 @@ namespace DashboardExtras.Api
         {
             public string UpTimeDays  { get; set; }
             public string UpTimeHours { get; set; }
+            public string UpTimeMinutes { get; set; }
+            public string UpTimeSeconds { get; set; }
            
         }
 
-        [Route("/GetWeatherData", "GET", Summary = "Get System Up-time Data")]
+        [Route("/GetWeatherData", "GET", Summary = "Get System Weather Data")]
         public class WeatherData : IReturn<string>
         {
             public string weatherData { get; set; }
@@ -52,7 +52,7 @@ namespace DashboardExtras.Api
         private IJsonSerializer JsonSerializer { get; set; }
         private IFileSystem FileSystem         { get; set; }
         
-        public CpuLoadService(IJsonSerializer json, IFileSystem fS)
+        public DashboardExtrasService(IJsonSerializer json, IFileSystem fS)
         {
             JsonSerializer = json;
             FileSystem = fS;
@@ -74,7 +74,7 @@ namespace DashboardExtras.Api
             return JsonSerializer.SerializeToString(new EnabledExtras()
             {
                 StorageEnabled = config.StorageEnabled != null ? config.StorageEnabled : false,
-                UpTimeEnabled = config.UpTimeEnabled != null ? config.UpTimeEnabled : false,
+                UpTimeEnabled  = config.UpTimeEnabled != null ? config.UpTimeEnabled : false,
                 WeatherEnabled = config.WeatherEnabled != null ? config.WeatherEnabled : false,
             });
         }
@@ -93,20 +93,25 @@ namespace DashboardExtras.Api
                     upTime = (DateTime.Now - DateTime.Parse(info));
                     return JsonSerializer.SerializeToString(new SystemUpTimeData()
                     {
-                        UpTimeDays  = upTime.Days.ToString(),
-                        UpTimeHours = upTime.Hours.ToString()
+                        UpTimeDays    = upTime.Days.ToString(),
+                        UpTimeHours   = upTime.Hours.ToString(),
+                        UpTimeMinutes = upTime.Minutes.ToString(),
+                        UpTimeSeconds = upTime.Seconds.ToString()
                     });
 
                 case false:
-                    info = WindowsCmd.GetCommandOutput("net statistics server");
-                    var info1 = info.Split(new[] { "Statistics since" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                    var info2 = info1.Split(new[] { "Sessions accepted" }, StringSplitOptions.RemoveEmptyEntries)[0];
-                    upTime = (DateTime.Now.Subtract(DateTime.Parse(info2)));
+                    
+                    info = WindowsCmd.GetCommandOutput("cmd", " /c wmic path Win32_OperatingSystem get LastBootUpTime");
+                    var info1 = info.Split(new[] { "LastBootUpTime" }, StringSplitOptions.RemoveEmptyEntries)[0].Trim(); var info2 = info1.Split('-')[0].Split('.')[0];
+                    var info3 = info2.Insert(4, "/").Insert(7, "/").Insert(10, " ").Insert(13, ":").Insert(16, ":");
+                    upTime = (DateTime.Now.Subtract(DateTime.Parse(info3)));
 
                     return JsonSerializer.SerializeToString(new SystemUpTimeData()
                     {
-                        UpTimeDays =  upTime.Days.ToString(),
-                        UpTimeHours = upTime.Hours.ToString()
+                        UpTimeDays    = upTime.Days.ToString(),
+                        UpTimeHours   = upTime.Hours.ToString(),
+                        UpTimeMinutes = upTime.Minutes.ToString(),
+                        UpTimeSeconds = upTime.Seconds.ToString()
 
                     });
                 default:
@@ -133,7 +138,6 @@ namespace DashboardExtras.Api
 
         public string Get(WeatherData request)
         {
-           
             var config = Plugin.Instance.Configuration;
             if (config.OpenWeatherMapApiKey == null) return string.Empty;
             var units = config.Degree == "celsius" ? "metric" : "imperial";
