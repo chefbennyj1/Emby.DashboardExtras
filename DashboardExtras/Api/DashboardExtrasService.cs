@@ -102,7 +102,8 @@ namespace DashboardExtras.Api
                 case false:
                     
                     info = WindowsCmd.GetCommandOutput("cmd", " /c wmic path Win32_OperatingSystem get LastBootUpTime");
-                    var info1 = info.Split(new[] { "LastBootUpTime" }, StringSplitOptions.RemoveEmptyEntries)[0].Trim(); var info2 = info1.Split('-')[0].Split('.')[0];
+                    var info1 = info.Split(new[] { "LastBootUpTime" }, StringSplitOptions.RemoveEmptyEntries)[0].Trim();
+                    var info2 = info1.Split('-')[0].Split('.')[0];
                     var info3 = info2.Insert(4, "/").Insert(7, "/").Insert(10, " ").Insert(13, ":").Insert(16, ":");
                     upTime = (DateTime.Now.Subtract(DateTime.Parse(info3)));
 
