@@ -11,5 +11,6 @@ namespace DashboardExtras.Configuration
         public string OpenWeatherMapCityCode { get; set; }
         public string Degree                 { get; set; }
         public string CustomJavascript       { get; set; }
+        public bool BackgroundBlur           { get; set; }
     }
 }

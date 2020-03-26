@@ -1,6 +1,44 @@
 
 
-(function (win) {
+(function(win) {
+    var blurObserver = new MutationObserver((mutations) => {
+        try {
+            var backgroundContainer = document.querySelector('.dialogBackdropOpened');
+            var backdropContainer = document.querySelector('.backdropContainer ');
+            var drawer = document.querySelector('.mainDrawer');
+            var mainAnimatedPages = document.querySelector('.mainAnimatedPages');
+            var skinHeader = document.querySelector('.skinHeader');
+
+            if (document.querySelector('.dialogBackdropOpened')) {
+                backgroundContainer.style.opacity = 0;
+                drawer.style.filter = "blur(8px)";
+                mainAnimatedPages.style.filter = "blur(8px)";
+                skinHeader.style.filter = "blur(8px)";
+                backdropContainer.style.filter = "blur(8px)";
+                return;
+
+            } else if (!document.querySelector('.dialogBackdropOpened')) {
+                drawer.style.filter = "blur(0)";
+                mainAnimatedPages.style.filter = "blur(0)";
+                skinHeader.style.filter = "blur(0)";
+                backdropContainer.style.filter = "blur(0)";
+                return;
+            }
+        } catch (error) {
+        }
+    });
+
+    blurObserver.observe(document,
+        {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeOldValue: true
+        });
+    enableListeners(win);
+})(this);
+
+function enableListeners(win) {
     
     var listeners = [],
         doc = win.document,
@@ -28,9 +66,7 @@
         }
         // Check if the element is currently in the DOM
         check();
-    }
-
-
+    } 
 
     function check() {
         // Check the DOM for elements matching a stored selector
@@ -50,12 +86,10 @@
                 }
             }
         }
-    }
-
+    } 
     // Expose `ready`
-    win.ready = ready;
-
-})(this);
+    win.ready = ready; 
+}
 
 
 function getWeatherIcon(weatherData) {
@@ -151,30 +185,28 @@ function getGpuSvgHtml() {
     return '<svg width="24" height="24"><symbol style="fill: #141414; stroke:none" viewbox="0 0 24 24" id="gpu"><path style="fill:darkgray" d="M2,7V8.5H3V17H4.5V7C3.7,7 2.8,7 2,7M6,7V7L6,16H7V17H14V16H22V7H6M17.5,9A2.5,2.5 0 0,1 20,11.5A2.5,2.5 0 0,1 17.5,14A2.5,2.5 0 0,1 15,11.5A2.5,2.5 0 0,1 17.5,9Z"/></symbol></svg>';
 }
 
-function createNetworkChart(info, chartCanvas, Chart) {
-   
-        var ctx = chartCanvas.getContext("2d");
-        return new Chart(ctx,
-            {
-                type: 'horizontalBar',
-                data: {
-                    labels: [new Date().getSeconds()],
-                    datasets: [
-                        {
-                            label: 'Download Speed',
-                            borderColor: "#4584b5",
-                            fill: false,
-                            data: info != null ? info.NetworkInterface.BytesSent :0
-                        }, {
-                            label: 'Upload Speed',
-                            borderColor: "#D4AF37",
-                            fill: false,
-                            data: info != null ? info.NetworkInterface.BytesReceived : 0
-                        }
-                    ]
-                }
-            });
-    
+function createNetworkChart(info, chartCanvas, Chart) { 
+    var ctx = chartCanvas.getContext("2d");
+    return new Chart(ctx,
+        {
+            type: 'horizontalBar',
+            data: {
+                labels: [new Date().getSeconds()],
+                datasets: [
+                    {
+                        label: 'Download Speed',
+                        borderColor: "#4584b5",
+                        fill: false,
+                        data: info != null ? info.NetworkInterface.BytesSent : 0
+                    }, {
+                        label: 'Upload Speed',
+                        borderColor: "#D4AF37",
+                        fill: false,
+                        data: info != null ? info.NetworkInterface.BytesReceived : 0
+                    }
+                ]
+            }
+        });
 }
 
 
@@ -359,6 +391,7 @@ ready(".localUrl", (element) => {
                         weatherData.sys.country;
                 });
             }
+
 
         });
     }, 60 * 60 * 10);

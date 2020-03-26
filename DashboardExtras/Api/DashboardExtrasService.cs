@@ -22,6 +22,7 @@ namespace DashboardExtras.Api
             public bool UpTimeEnabled  { get; set; }
             public bool StorageEnabled { get; set; }
             public bool WeatherEnabled { get; set; }
+            public bool BackgroundBlur { get; set; }
         }
 
 
@@ -56,14 +57,12 @@ namespace DashboardExtras.Api
         {
             JsonSerializer = json;
             FileSystem = fS;
-           
         }
         
         private bool IsUnix()
         {
             var isUnix = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
                          RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-
             return isUnix;
         }
 
@@ -74,8 +73,9 @@ namespace DashboardExtras.Api
             return JsonSerializer.SerializeToString(new EnabledExtras()
             {
                 StorageEnabled = config.StorageEnabled != null ? config.StorageEnabled : false,
-                UpTimeEnabled  = config.UpTimeEnabled != null ? config.UpTimeEnabled : false,
+                UpTimeEnabled  = config.UpTimeEnabled != null  ? config.UpTimeEnabled  : false,
                 WeatherEnabled = config.WeatherEnabled != null ? config.WeatherEnabled : false,
+                BackgroundBlur = config.BackgroundBlur != null ? config.BackgroundBlur : false
             });
         }
 

@@ -134,9 +134,10 @@
                 () => {
 
                     ApiClient.getPluginConfiguration(pluginId).then((config) => {
-                        config.WeatherEnabled ? view.querySelector('#weatherEnabled').checked = config.WeatherEnabled : false;
-                        config.UpTimeEnabled  ? view.querySelector('#upTimeEnabled').checked  = config.UpTimeEnabled  : false;
-                        config.StorageEnabled ? view.querySelector('#storageEnabled').checked = config.StorageEnabled : false;
+                        config.WeatherEnabled ? view.querySelector('#weatherEnabled').checked             = config.WeatherEnabled : false;
+                        config.UpTimeEnabled  ? view.querySelector('#upTimeEnabled').checked              = config.UpTimeEnabled  : false;
+                        config.StorageEnabled ? view.querySelector('#storageEnabled').checked             = config.StorageEnabled : false;
+                        config.BackgroundBlur ? view.querySelector('#blurBackgroundOnDialogOpen').checked = config.BackgroundBlur : false;
                     });
 
                     view.querySelector('#weatherEnabled').addEventListener('change',
@@ -166,6 +167,15 @@
                             ApiClient.getPluginConfiguration(pluginId).then((config) => {
                                 config.StorageEnabled = storage.checked;
                                 ApiClient.updatePluginConfiguration(pluginId, config).then((result) => {});
+                            });
+                        });
+
+                    view.querySelector('#blurBackgroundOnDialogOpen').addEventListener('change',
+                        (e) => {
+                            var blur = view.querySelector('#blurBackgroundOnDialogOpen');
+                            ApiClient.getPluginConfiguration(pluginId).then((config) => {
+                                config.BackgroundBlur = blur.checked;
+                                ApiClient.updatePluginConfiguration(pluginId, config).then((result) => { });
                             });
                         });
 
