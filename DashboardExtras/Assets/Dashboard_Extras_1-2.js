@@ -346,9 +346,7 @@ ready(".localUrl", (element) => {
                         " " +
                         weatherData.sys.country;
                 });
-            }
-
-
+            } 
         });
     }, 60 * 60 * 10);
 });
