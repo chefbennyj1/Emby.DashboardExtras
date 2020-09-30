@@ -1,44 +1,5 @@
-
-
-(function(win) {
-    var blurObserver = new MutationObserver((mutations) => {
-        try {
-            var backgroundContainer = document.querySelector('.dialogBackdropOpened');
-            var backdropContainer = document.querySelector('.backdropContainer ');
-            var drawer = document.querySelector('.mainDrawer');
-            var mainAnimatedPages = document.querySelector('.mainAnimatedPages');
-            var skinHeader = document.querySelector('.skinHeader');
-
-            if (document.querySelector('.dialogBackdropOpened')) {
-                backgroundContainer.style.opacity = 0;
-                drawer.style.filter = "blur(8px)";
-                mainAnimatedPages.style.filter = "blur(8px)";
-                skinHeader.style.filter = "blur(8px)";
-                backdropContainer.style.filter = "blur(8px)";
-                return;
-
-            } else if (!document.querySelector('.dialogBackdropOpened')) {
-                drawer.style.filter = "blur(0)";
-                mainAnimatedPages.style.filter = "blur(0)";
-                skinHeader.style.filter = "blur(0)";
-                backdropContainer.style.filter = "blur(0)";
-                return;
-            }
-        } catch (error) {
-        }
-    });
-
-    blurObserver.observe(document,
-        {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeOldValue: true
-        });
-    enableListeners(win);
-})(this);
-
-function enableListeners(win) {
+﻿
+(function (win) {
     
     var listeners = [],
         doc = win.document,
@@ -66,7 +27,9 @@ function enableListeners(win) {
         }
         // Check if the element is currently in the DOM
         check();
-    } 
+    }
+
+
 
     function check() {
         // Check the DOM for elements matching a stored selector
@@ -86,10 +49,12 @@ function enableListeners(win) {
                 }
             }
         }
-    } 
+    }
+
     // Expose `ready`
-    win.ready = ready; 
-}
+    win.ready = ready;
+
+})(this);
 
 
 function getWeatherIcon(weatherData) {
@@ -100,6 +65,7 @@ function getWeatherIcon(weatherData) {
     switch (weatherData.weather[0].main) {
         case "Mist":
         case "Fog":
+	case "Haze":
             return "fog";
         case "Clear":
             return now < weatherData.sys.sunset && now > weatherData.sys.sunrise ? "sunny" : "night";
@@ -185,28 +151,30 @@ function getGpuSvgHtml() {
     return '<svg width="24" height="24"><symbol style="fill: #141414; stroke:none" viewbox="0 0 24 24" id="gpu"><path style="fill:darkgray" d="M2,7V8.5H3V17H4.5V7C3.7,7 2.8,7 2,7M6,7V7L6,16H7V17H14V16H22V7H6M17.5,9A2.5,2.5 0 0,1 20,11.5A2.5,2.5 0 0,1 17.5,14A2.5,2.5 0 0,1 15,11.5A2.5,2.5 0 0,1 17.5,9Z"/></symbol></svg>';
 }
 
-function createNetworkChart(info, chartCanvas, Chart) { 
-    var ctx = chartCanvas.getContext("2d");
-    return new Chart(ctx,
-        {
-            type: 'horizontalBar',
-            data: {
-                labels: [new Date().getSeconds()],
-                datasets: [
-                    {
-                        label: 'Download Speed',
-                        borderColor: "#4584b5",
-                        fill: false,
-                        data: info != null ? info.NetworkInterface.BytesSent : 0
-                    }, {
-                        label: 'Upload Speed',
-                        borderColor: "#D4AF37",
-                        fill: false,
-                        data: info != null ? info.NetworkInterface.BytesReceived : 0
-                    }
-                ]
-            }
-        });
+function createNetworkChart(info, chartCanvas, Chart) {
+   
+        var ctx = chartCanvas.getContext("2d");
+        return new Chart(ctx,
+            {
+                type: 'horizontalBar',
+                data: {
+                    labels: [new Date().getSeconds()],
+                    datasets: [
+                        {
+                            label: 'Download Speed',
+                            borderColor: "#4584b5",
+                            fill: false,
+                            data: info != null ? info.NetworkInterface.BytesSent :0
+                        }, {
+                            label: 'Upload Speed',
+                            borderColor: "#D4AF37",
+                            fill: false,
+                            data: info != null ? info.NetworkInterface.BytesReceived : 0
+                        }
+                    ]
+                }
+            });
+    
 }
 
 
@@ -228,39 +196,7 @@ ready(".localUrl", (element) => {
 
     ApiClient.getJSON('/EnabledExtras').then((extras) => {
          
-        /*
-        var gpuContainer = document.createElement("div");
-        gpuContainer.style = 'display:flex; margin:-1em';
-
-        var gpuSvg          = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        gpuSvg.style.height = '35px';
-        gpuSvg.style.width  = '35px';
-        gpuSvg.style.margin = '0.4em 0.9em';
         
-        svgGpuUseElement = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-        svgGpuUseElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#gpu');
-        gpuSvg.appendChild(svgGpuUseElement);
-
-        gpuStat = document.createElement('p');
-        gpuStat.id = 'gpuStat';
-        gpuContainer.appendChild(gpuSvg);
-        gpuContainer.appendChild(gpuStat);
-        element.parentNode.insertBefore(gpuContainer, element);
-        */
-
-        //var networkChartContainer = document.createElement('div');
-        //networkChartContainer.style = "max-height:12em;  max-width:24em";
-        //var chartCanvas = document.createElement('canvas');
-        //chartCanvas.style = "max-height:12em; max-width:24em";
-        //networkChartContainer.appendChild(chartCanvas);
-        //element.parentNode.insertBefore(networkChartContainer, element);
-        //require([Dashboard.getConfigurationResourceUrl('Chart.bundle.js')],
-        //    (Chart) => {
-        //        networkGraph = createNetworkChart(null, chartCanvas, Chart);
-        //    });
-
-
-
         if (extras.UpTimeEnabled === true) {
             // Create a the upTime Element
             upTimeNode = document.createElement('p');
@@ -279,6 +215,55 @@ ready(".localUrl", (element) => {
                 upTimeNode.innerHTML = 'Up Time: ' + json['UpTimeDays'] + ' Day(s) ' + json['UpTimeHours'] + ' Hour(s)';
             });
         } 
+
+        var powerButton = document.querySelector('button.btnRestartMenu');
+        var icon = powerButton.querySelector('i');
+        icon.style.display = "none";
+        powerButton.innerHTML = '<svg style="width:40px;height:40px" viewBox="0 0 24 24"><path fill="currentColor" d="M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.36,6.88 4,9.28 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12C20,9.28 18.64,6.88 16.56,5.44M13,3H11V13H13"/></svg>';
+        powerButton.querySelector('svg').style.transition = "5s";
+        
+        powerButton.addEventListener('mouseenter', () => {
+            powerButton.innerHTML = '<svg style="width:40px;height:40px" viewBox="0 0 24 24"><path fill="currentColor" d="M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A9,9 0 0,0 21,12A9,9 0 0,0 12,3M12,19A7,7 0 0,1 5,12A7,7 0 0,1 12,5A7,7 0 0,1 19,12A7,7 0 0,1 12,19M13,17H11V7H13V17Z" /></svg>';
+        });
+
+        powerButton.addEventListener('mouseleave', () => {
+            powerButton.innerHTML = '<svg style="width:40px;height:40px" viewBox="0 0 24 24"><path fill="currentColor" d="M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.36,6.88 4,9.28 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12C20,9.28 18.64,6.88 16.56,5.44M13,3H11V13H13"/></svg>'; 
+        });
+
+        if (extras.BackgroundBlur === true) {
+            //Blur backgrounds on dialog open
+            var blurObserver = new MutationObserver((mutations) => {
+                try {
+                    var backgroundContainer = document.querySelector('.dialogBackdropOpened');
+                    var backdropContainer   = document.querySelector('.backdropContainer ')
+                    var drawer              = document.querySelector('.mainDrawer');
+                    var mainAnimatedPages   = document.querySelector('.mainAnimatedPages');
+                    var skinHeader          = document.querySelector('.skinHeader');
+
+                    if (document.querySelector('.dialogBackdropOpened')) {
+                        backgroundContainer.style.opacity = 0;
+                        drawer.style.filter               = "blur(8px)";
+                        mainAnimatedPages.style.filter    = "blur(8px)";
+                        skinHeader.style.filter           = "blur(8px)";
+                        backdropContainer.style.filter    = "blur(8px)";
+                        return;
+
+                    } else if (!document.querySelector('.dialogBackdropOpened')) { 
+                        drawer.style.filter            = "blur(0)";
+                        mainAnimatedPages.style.filter = "blur(0)";
+                        skinHeader.style.filter        = "blur(0)";
+                        backdropContainer.style.filter = "blur(0)";
+                        return;
+                    }
+                } catch (error) { }
+            });
+            blurObserver.observe(document, {
+                childList        : true,
+                subtree          : true,
+                attributes       : true,
+                attributeOldValue: true
+            });
+        }
 
         if (extras.StorageEnabled === true) {
             totalStorageNode    = document.createElement('p');
@@ -301,7 +286,7 @@ ready(".localUrl", (element) => {
 
             weatherSvg.style.height = '25px';
             weatherSvg.style.width  = '25px';
-            weatherSvg.style.margin = '0.6em 0.9em';
+            weatherSvg.style.margin = '0.95em 0.9em';
 
             weatherSvg.appendChild(svgWeatherUseElement);
 
@@ -327,36 +312,7 @@ ready(".localUrl", (element) => {
                 temperature.innerHTML = "Open plugin settings to access weather data.";
             }
         }
-
-        /*
-        var received = 0, sent = 0;
-
-        ApiClient._webSocket.addEventListener('message', function (msg) {
-            var json = JSON.parse(msg.data);
-            if (json.MessageType == "Resources") {
-                var info = JSON.parse(json.Data);
-                if (networkGraph) {
-                    if (info.NetworkInterface.BytesReceived / 1024 != received && info.NetworkInterface.BytesSent / 1024 != sent) {
-
-                        networkGraph.data.labels = [new Date().getSeconds()];
-                        networkGraph.data.datasets[1].data = info.NetworkInterface.BytesSent / 1024;
-                        networkGraph.data.datasets[0].data = info.NetworkInterface.BytesReceived / 1024;
-                        networkGraph.update();
-
-                        received = info.NetworkInterface.BytesReceived / 1024;
-                        sent = info.NetworkInterface.BytesSent / 1024;
-
-                        
-                    }
-                
-                }
-
-                //cpuStat.innerHTML = "Cpu: " + (info.cpu.Percentage) + "%";
-                //gpuStat.innerHTML = (info.Gpu.Percentage) + " " + (info.Gpu.Temp) + "°C";
-            }
-            
-        });
-        */
+        
     });
 
     upTimeCounter = setInterval(() => {

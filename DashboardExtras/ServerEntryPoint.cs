@@ -32,6 +32,7 @@ namespace DashboardExtras
             ServerApplicationPaths = paths;
             SessionManager         = ses;
             JsonSerializer         = json;
+            
         }
         public void Dispose()
         {
