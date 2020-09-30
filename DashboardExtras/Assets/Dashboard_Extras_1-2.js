@@ -1,6 +1,5 @@
 ﻿
-(function (win) {
-    
+(function (win) {       
     var listeners = [],
         doc = win.document,
         MutationObserver = win.MutationObserver || win.WebKitMutationObserver,
